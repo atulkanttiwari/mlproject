@@ -32,8 +32,8 @@ def predict_datapoint():
         parental_level_of_education=parental_level_of_education,
         lunch=lunch,
         test_preparation_course=test_preparation_course,
-        reading_score=float(request.form.get('reading_score')),
-        writing_score=float(request.form.get('writing_score')),
+        reading_score=float(request.form.get('reading_score',0)),
+        writing_score=float(request.form.get('writing_score',0)),
         )
 
         pred_df=data.get_data_as_data_frame()
@@ -42,6 +42,4 @@ def predict_datapoint():
         predict_pipeline=PredictPipeline()
         results = predict_pipeline.predict(pred_df)
         return render_template('home.html',results=results[0])
-
-if __name__=="__main__":
-    application.run(host="0.0.0.0")       
+     
