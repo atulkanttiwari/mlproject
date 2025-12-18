@@ -38,15 +38,13 @@ class ModelTrainer:
             )
             
             models = {
-                "Random Forest":RandomForestRegressor(),
-                "Decision Tree":DecisionTreeRegressor(),
-                "Gradient Boosting":GradientBoostingRegressor(),
-                "Linear Regression":LinearRegression(),
-                "K-Neighbors Regressor":KNeighborsRegressor(),
-                "XGBRegressor":XGBRFRegressor(),
-                "CatBoosting Regressor":CatBoostRegressor(verbose=False),
-                "AdaBoost Regressor":AdaBoostRegressor(),
+                "Random Forest": RandomForestRegressor(),
+                "Decision Tree": DecisionTreeRegressor(),
+                "Gradient Boosting": GradientBoostingRegressor(),
+                "CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                "AdaBoost Regressor": AdaBoostRegressor(),
             }
+
             
             params={
                 "Decision Tree": {
@@ -68,11 +66,7 @@ class ModelTrainer:
                     # 'max_features':['auto','sqrt','log2'],
                     'n_estimators': [8,16,32,64,128,256]
                 },
-                "Linear Regression":{},
-                "XGBRegressor":{
-                    'learning_rate':[.1,.01,.05,.001],
-                    'n_estimators': [8,16,32,64,128,256]
-                },
+                
                 "CatBoosting Regressor":{
                     'depth': [6,8,10],
                     'learning_rate': [0.01, 0.05, 0.1],
