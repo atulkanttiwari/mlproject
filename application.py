@@ -1,45 +1,62 @@
-from flask import Flask,render_template,request
-import numpy as np
+import sys
+import os  # ⚠️ Added missing import
 import pandas as pd
-
-from sklearn.preprocessing import StandardScaler
-from src.pipeline.predict_pipeline import CustomData,PredictPipeline
-
-
-application=Flask(__name__)
+from src.exception import CustomException
+from src.utils import load_object
 
 
-## Route for a home page
+class PredictPipeline:
+    def __init__(self):
+        pass
 
-@application.route('/')
-def index():
-    return render_template('index.html')
-
-@application.route('/predictdata',methods=['GET','POST'])
-def predict_datapoint():
-    if request.method=='GET':
-        return render_template('home.html')
-    else:
-        gender = request.form.get('gender') or "missing"
-        race_ethnicity = request.form.get('race_ethnicity') or "missing"
-        parental_level_of_education = request.form.get('parental_level_of_education') or "missing"
-        lunch = request.form.get('lunch') or "missing"
-        test_preparation_course = request.form.get('test_preparation_course') or "missing"
-
-        data = CustomData(
-            gender=gender,
-            race_ethnicity=race_ethnicity,
-            parental_level_of_education=parental_level_of_education,
-            lunch=lunch,
-            test_preparation_course=test_preparation_course,
-            reading_score=float(request.form.get('reading_score',0)),
-            writing_score=float(request.form.get('writing_score',0)),
-        )
-
-        pred_df=data.get_data_as_data_frame()
-        print(pred_df)
+    def predict(self, features):
+        try:
+            model_path = os.path.join("artifacts", "model.pkl")
+            preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
+            print("Before Loading")
+            model = load_object(file_path=model_path)
+            preprocessor = load_object(file_path=preprocessor_path)
+            print("After Loading")
+            data_scaled = preprocessor.transform(features)
+            preds = model.predict(data_scaled)
+            return preds
         
-        predict_pipeline=PredictPipeline()
-        results = predict_pipeline.predict(pred_df)
-        return render_template('home.html',results=results[0])
-     
+        except Exception as e:
+            raise CustomException(e, sys)
+
+
+class CustomData:
+    def __init__(
+        self,
+        gender: str,
+        race_ethnicity: str,
+        parental_level_of_education: str,  
+        lunch: str,
+        test_preparation_course: str,
+        reading_score: float,  
+        writing_score: float 
+    ):
+        self.gender = gender
+        self.race_ethnicity = race_ethnicity
+        self.parental_level_of_education = parental_level_of_education
+        self.lunch = lunch
+        self.test_preparation_course = test_preparation_course
+        self.reading_score = reading_score
+        self.writing_score = writing_score
+
+    def get_data_as_data_frame(self):
+        try:
+            custom_data_input_dict = {
+                "gender": [self.gender],
+                "race_ethnicity": [self.race_ethnicity],
+                "parental_level_of_education": [self.parental_level_of_education],
+                "lunch": [self.lunch],
+                "test_preparation_course": [self.test_preparation_course],
+                "reading_score": [self.reading_score],
+                "writing_score": [self.writing_score],
+            }
+
+            return pd.DataFrame(custom_data_input_dict)
+
+        except Exception as e:
+            raise CustomException(e, sys)
