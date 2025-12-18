@@ -27,13 +27,13 @@ def predict_datapoint():
         test_preparation_course = request.form.get('test_preparation_course') or "missing"
 
         data = CustomData(
-        gender=gender,
-        race_ethnicity=race_ethnicity,
-        parental_level_of_education=parental_level_of_education,
-        lunch=lunch,
-        test_preparation_course=test_preparation_course,
-        reading_score=float(request.form.get('reading_score',0)),
-        writing_score=float(request.form.get('writing_score',0)),
+            gender=gender,
+            race_ethnicity=race_ethnicity,
+            parental_level_of_education=parental_level_of_education,
+            lunch=lunch,
+            test_preparation_course=test_preparation_course,
+            reading_score=float(request.form.get('reading_score',0)),
+            writing_score=float(request.form.get('writing_score',0)),
         )
 
         pred_df=data.get_data_as_data_frame()
